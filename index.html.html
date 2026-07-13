@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="en" data-active-lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Invisible Infrastructures of Flourishing</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,450;0,9..144,600;1,9..144,450&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy-deep: #0A0F1C;
+    --navy-mid: #121A2C;
+    --navy-line: #26324A;
+    --gold: #C9A24B;
+    --gold-dim: #8C7638;
+    --teal: #46A599;
+    --teal-dim: #2C6A62;
+    --parchment: #ECE6D8;
+    --parchment-dim: #A9A48F;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { background: var(--navy-deep); color: var(--parchment); font-family: 'Inter', sans-serif; line-height: 1.6; overflow-x: hidden; }
+  h1, h2, h3, .display { font-family: 'Fraunces', serif; font-weight: 450; letter-spacing: -0.01em; }
+  .mono { font-family: 'IBM Plex Mono', monospace; letter-spacing: 0.02em; }
+  .wrap { max-width: 1100px; margin: 0 auto; padding: 0 28px; }
+  section { position: relative; padding: 110px 0; }
+  section + section { border-top: 1px solid var(--navy-line); }
+  .eyebrow { font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--gold); display: flex; align-items: center; gap: 10px; margin-bottom: 22px; }
+  .eyebrow::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--teal); box-shadow: 0 0 0 3px rgba(70,165,153,0.15); }
+
+  /* ---------- LANG TOGGLE ---------- */
+  /* !important necessario pq alguns blocos usam style="display:contents"
+     inline (pra herdar grid/flex do pai), que teria especificidade maior
+     que essa regra externa e quebraria o alternador silenciosamente. */
+  [data-i18n] [lang="pt"] { display: none !important; }
+  html[data-active-lang="pt"] [data-i18n] [lang="en"] { display: none !important; }
+  html[data-active-lang="pt"] [data-i18n] [lang="pt"] { display: inline !important; }
+  html[data-active-lang="pt"] [data-i18n] [lang="pt"][style*="contents"] { display: contents !important; }
+  .lang-switch {
+    display: flex; align-items: center; gap: 2px;
+    border: 1px solid var(--navy-line); border-radius: 20px; padding: 3px;
+    font-family: 'IBM Plex Mono', monospace; font-size: 11px;
+  }
+  .lang-switch button {
+    background: none; border: none; color: var(--parchment-dim);
+    padding: 5px 11px; border-radius: 16px; cursor: pointer; font-family: inherit; font-size: inherit;
+  }
+  .lang-switch button.active { background: var(--gold); color: var(--navy-deep); }
+
+  /* ---------- NAV ---------- */
+  nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; background: rgba(10,15,28,0.86); backdrop-filter: blur(10px); border-bottom: 1px solid var(--navy-line); }
+  nav .wrap { display: flex; align-items: center; justify-content: space-between; height: 64px; gap: 16px; }
+  .brand { font-family: 'Fraunces', serif; font-size: 17px; color: var(--parchment); white-space: nowrap; }
+  .brand span { color: var(--gold); }
+  .navlinks { display: flex; gap: 22px; font-size: 13px; }
+  .navlinks a { color: var(--parchment-dim); text-decoration: none; transition: color .2s; white-space: nowrap; }
+  .navlinks a:hover { color: var(--gold); }
+  @media (max-width: 900px) { .navlinks { display: none; } }
+
+  /* ---------- HERO ---------- */
+  #hero { padding-top: 190px; padding-bottom: 130px; border-top: none; position: relative; min-height: 92vh; display: flex; align-items: center; }
+  #network-canvas { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0.55; }
+  .hero-inner { position: relative; z-index: 2; }
+  .hero-inner h1 { font-size: clamp(38px, 6vw, 68px); line-height: 1.05; max-width: 820px; color: var(--parchment); }
+  .hero-inner h1 em { font-style: italic; color: var(--gold); }
+  .hero-sub { margin-top: 28px; max-width: 560px; font-size: 18px; color: var(--parchment-dim); font-weight: 400; }
+  .hero-cta { margin-top: 44px; display: flex; gap: 16px; flex-wrap: wrap; }
+  .btn { display: inline-block; padding: 13px 26px; font-size: 13px; font-family: 'IBM Plex Mono', monospace; letter-spacing: 0.06em; text-transform: uppercase; text-decoration: none; border-radius: 3px; cursor: pointer; border: 1px solid transparent; transition: transform .15s ease, background .2s ease, border-color .2s ease; }
+  .btn:hover { transform: translateY(-1px); }
+  .btn-primary { background: var(--gold); color: var(--navy-deep); }
+  .btn-primary:hover { background: #DCB868; }
+  .btn-ghost { background: transparent; color: var(--parchment); border-color: var(--navy-line); }
+  .btn-ghost:hover { border-color: var(--teal); color: var(--teal); }
+  .hero-strip { margin-top: 90px; display: flex; align-items: center; gap: 18px; font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: var(--parchment-dim); flex-wrap: wrap; }
+  .hero-strip .node { color: var(--gold); }
+  .hero-strip .arrow { color: var(--navy-line); }
+
+  /* ---------- THESIS ---------- */
+  .layers-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 1px; background: var(--navy-line); margin-top: 50px; border: 1px solid var(--navy-line); }
+  .layer-cell { background: var(--navy-deep); padding: 26px 22px; min-height: 150px; display: flex; flex-direction: column; justify-content: space-between; }
+  .layer-cell .n { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--teal); }
+  .layer-cell .name { font-family: 'Fraunces', serif; font-size: 19px; margin-top: 30px; }
+  .layer-clickable { cursor: pointer; transition: background .2s; }
+  .layer-clickable:hover { background: var(--navy-mid); }
+  .layer-example {
+    max-height: 0; overflow: hidden; opacity: 0; font-size: 12.5px; color: var(--teal);
+    transition: max-height .3s ease, opacity .3s ease, margin-top .3s ease;
+  }
+  .layer-example.open { max-height: 200px; opacity: 1; margin-top: 12px; }
+  .thesis-text { max-width: 720px; font-size: 17px; color: var(--parchment-dim); }
+  .thesis-text strong { color: var(--parchment); font-weight: 500; }
+
+  /* ---------- METHOD ---------- */
+  .method-list { margin-top: 46px; }
+  .method-item { display: grid; grid-template-columns: 40px 1fr; gap: 22px; padding: 26px 0; border-bottom: 1px solid var(--navy-line); }
+  .method-item:first-child { border-top: 1px solid var(--navy-line); }
+  .method-item .idx { font-family: 'IBM Plex Mono', monospace; color: var(--gold-dim); font-size: 13px; padding-top: 4px; }
+  .method-item h3 { font-size: 19px; font-weight: 500; margin-bottom: 6px; }
+  .method-item p { color: var(--parchment-dim); font-size: 15px; max-width: 620px; }
+  .formula-box { margin-top: 56px; padding: 34px 32px; background: var(--navy-mid); border: 1px solid var(--navy-line); border-radius: 4px; }
+  .formula-box .f { font-family: 'IBM Plex Mono', monospace; font-size: 22px; color: var(--gold); }
+  .formula-box .f-label { margin-top: 14px; font-size: 13px; color: var(--parchment-dim); }
+
+  /* ---------- STATUS TAGS ---------- */
+  .tag { display: inline-flex; align-items: center; gap: 6px; font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; padding: 4px 10px; border-radius: 20px; }
+  .tag::before { content: ""; width: 6px; height: 6px; border-radius: 50%; }
+  .tag-confirmed { background: rgba(70,165,153,0.12); color: var(--teal); border: 1px solid rgba(70,165,153,0.4); }
+  .tag-confirmed::before { background: var(--teal); }
+  .tag-conversation { background: rgba(201,162,75,0.10); color: var(--gold); border: 1px dashed rgba(201,162,75,0.5); }
+  .tag-conversation::before { background: var(--gold); }
+  .tag-open { background: transparent; color: var(--parchment-dim); border: 1px dashed var(--navy-line); }
+  .tag-open::before { background: var(--parchment-dim); }
+  .tag-exploratory { background: transparent; color: var(--parchment-dim); border: 1px solid var(--navy-line); }
+  .tag-exploratory::before { background: var(--parchment-dim); }
+
+  /* ---------- LIVING LABS ---------- */
+  .labs-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 16px; margin-top: 48px; }
+  .lab-card { background: var(--navy-mid); border: 1px solid var(--navy-line); border-radius: 4px; padding: 26px; position: relative; overflow: hidden; }
+  .lab-card::after { content: ""; position: absolute; top: -20px; right: -20px; width: 90px; height: 90px; border-radius: 50%; background: radial-gradient(circle, rgba(70,165,153,0.10), transparent 70%); }
+  .lab-card h3 { font-size: 18px; margin: 14px 0 8px; position: relative; }
+  .lab-card p { font-size: 13.5px; color: var(--parchment-dim); position: relative; }
+
+  /* ---------- CIRCLE / TEAM ---------- */
+  .circle-cat { margin-top: 60px; }
+  .circle-cat h3.catname { font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--parchment-dim); padding-bottom: 14px; border-bottom: 1px solid var(--navy-line); margin-bottom: 22px; }
+  .people-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 14px; }
+  .person-card { border: 1px solid var(--navy-line); border-radius: 4px; padding: 22px; background: var(--navy-deep); }
+  .person-card .name { font-family: 'Fraunces', serif; font-size: 18px; margin-bottom: 4px; }
+  .person-card .role { font-size: 13px; color: var(--parchment-dim); margin-bottom: 14px; min-height: 34px; }
+  .person-card .meta { display: flex; justify-content: space-between; align-items: center; font-size: 12px; }
+  .person-card .country { color: var(--parchment-dim); font-family: 'IBM Plex Mono', monospace; }
+  .openrole-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin-top: 20px; }
+  .openrole-chip { border: 1px dashed var(--navy-line); border-radius: 4px; padding: 16px 18px; font-size: 14px; color: var(--parchment-dim); display: flex; justify-content: space-between; align-items: center; }
+
+  /* ---------- FORM ---------- */
+  .form-panel { margin-top: 50px; background: var(--navy-mid); border: 1px solid var(--navy-line); border-radius: 4px; padding: 40px; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+  @media (max-width: 640px) { .form-row { grid-template-columns: 1fr; } }
+  label { display: block; font-size: 12px; color: var(--parchment-dim); margin-bottom: 6px; font-family: 'IBM Plex Mono', monospace; letter-spacing: 0.04em; }
+  input, select, textarea { width: 100%; background: var(--navy-deep); border: 1px solid var(--navy-line); color: var(--parchment); padding: 11px 13px; border-radius: 3px; font-family: 'Inter', sans-serif; font-size: 14px; }
+  input:focus, select:focus, textarea:focus { outline: 2px solid var(--teal); border-color: var(--teal); }
+  textarea { resize: vertical; min-height: 90px; }
+  .full { grid-column: 1 / -1; }
+
+  /* ---------- SUPPORT ---------- */
+  .support-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; margin-top: 46px; }
+  .support-card { border: 1px solid var(--navy-line); border-radius: 4px; padding: 24px; display: flex; flex-direction: column; justify-content: space-between; min-height: 190px; }
+  .support-card .amount { font-family: 'IBM Plex Mono', monospace; color: var(--gold); font-size: 20px; }
+  .support-card .lvl { font-family: 'Fraunces', serif; font-size: 17px; margin: 10px 0 8px; }
+  .support-card p { font-size: 13.5px; color: var(--parchment-dim); }
+  .support-note { margin-top: 30px; padding: 20px 24px; border-left: 2px solid var(--teal); background: rgba(70,165,153,0.05); font-size: 14px; color: var(--parchment-dim); }
+
+  /* ---------- UPDATES ---------- */
+  .update-item { padding: 24px 0; border-bottom: 1px solid var(--navy-line); display: grid; grid-template-columns: 140px 1fr; gap: 20px; }
+  .update-item:first-child { border-top: 1px solid var(--navy-line); }
+  .update-item .date { font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: var(--gold-dim); }
+  .update-item h3 { font-size: 16px; font-weight: 500; margin-bottom: 6px; }
+  .update-item p { font-size: 13.5px; color: var(--parchment-dim); }
+  @media (max-width: 600px) { .update-item { grid-template-columns: 1fr; gap: 6px; } }
+
+  footer { padding: 60px 0 40px; border-top: 1px solid var(--navy-line); font-size: 13px; color: var(--parchment-dim); display: flex; justify-content: space-between; flex-wrap: wrap; gap: 16px; }
+  footer a { color: var(--gold); text-decoration: none; }
+
+  .thankyou { display: none; margin-top: 18px; padding: 14px 18px; border: 1px solid var(--teal); border-radius: 3px; color: var(--teal); font-size: 13.5px; }
+  .thankyou.show { display: block; }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <div class="brand">Invisible <span>Infrastructures</span></div>
+    <div class="navlinks" data-i18n>
+      <a href="#thesis"><span lang="en">Thesis</span><span lang="pt">Tese</span></a>
+      <a href="#method"><span lang="en">Method</span><span lang="pt">Método</span></a>
+      <a href="#labs"><span lang="en">Living Labs</span><span lang="pt">Laboratórios Vivos</span></a>
+      <a href="#bibliography"><span lang="en">Bibliography</span><span lang="pt">Bibliografia</span></a>
+      <a href="#circle"><span lang="en">Circle</span><span lang="pt">Círculo</span></a>
+      <a href="#roles"><span lang="en">Open Roles</span><span lang="pt">Vagas Abertas</span></a>
+      <a href="#support"><span lang="en">Support</span><span lang="pt">Apoiar</span></a>
+      <a href="#contact"><span lang="en">Contact</span><span lang="pt">Contato</span></a>
+    </div>
+    <div class="lang-switch">
+      <button id="btn-en" class="active" onclick="setLang('en')">EN</button>
+      <button id="btn-pt" onclick="setLang('pt')">PT</button>
+    </div>
+  </div>
+</nav>
+
+<section id="hero">
+  <canvas id="network-canvas"></canvas>
+  <div class="wrap hero-inner">
+    <div class="eyebrow"><span data-i18n><span lang="en">Brazil → Cerrado → World</span><span lang="pt">Brasil → Cerrado → Mundo</span></span></div>
+    <h1 data-i18n>
+      <span lang="en">Invisible <em>Infrastructures</em><br>of Flourishing</span>
+      <span lang="pt">Infraestruturas <em>Invisíveis</em><br>do Florescimento</span>
+    </h1>
+    <p class="hero-sub" data-i18n>
+      <span lang="en">A Brazil-led living lab and AI-assisted evidence infrastructure for detecting the weak signals that make people, communities and territories flourish — or collapse.</span>
+      <span lang="pt">Um laboratório vivo liderado do Brasil e uma infraestrutura de evidência assistida por IA para detectar os sinais fracos que fazem pessoas, comunidades e territórios florescerem — ou colapsarem.</span>
+    </p>
+    <div class="hero-cta">
+      <a href="#roles" class="btn btn-primary" data-i18n><span lang="en">Become a partner</span><span lang="pt">Torne-se parceiro</span></a>
+      <a href="#support" class="btn btn-ghost" data-i18n><span lang="en">Support the expedition</span><span lang="pt">Apoiar a expedição</span></a>
+    </div>
+    <div class="hero-strip" data-i18n>
+      <span lang="en"><span class="node">Economic</span><span class="arrow">·</span> <span class="node">Institutional</span><span class="arrow">·</span> <span class="node">Informational</span><span class="arrow">·</span> <span class="node">Ecological</span><span class="arrow">·</span> <span class="node">Social</span><span class="arrow">·</span> <span class="node">Affective-Domestic</span><span class="arrow">·</span> <span class="node">Cultural</span></span>
+      <span lang="pt"><span class="node">Econômica</span><span class="arrow">·</span> <span class="node">Institucional</span><span class="arrow">·</span> <span class="node">Informacional</span><span class="arrow">·</span> <span class="node">Ecológica</span><span class="arrow">·</span> <span class="node">Social</span><span class="arrow">·</span> <span class="node">Afetivo-Doméstica</span><span class="arrow">·</span> <span class="node">Cultural</span></span>
+    </div>
+  </div>
+</section>
+
+<section id="thesis">
+  <div class="wrap">
+    <div class="eyebrow" data-i18n><span lang="en">01 — The Thesis</span><span lang="pt">01 — A Tese</span></div>
+    <h2 style="font-size: clamp(28px,4vw,40px); max-width: 640px;" data-i18n>
+      <span lang="en">A system doesn't flourish by the average of its conditions.</span>
+      <span lang="pt">Um sistema não floresce pela média das suas condições.</span>
+    </h2>
+    <p class="thesis-text" style="margin-top:22px;" data-i18n>
+      <span lang="en">It flourishes — or collapses — from its <strong>most severe limit</strong>. One abundant dimension cannot compensate for a critical shortage in another. This is the same logic that runs through ecology, complex systems, and the question of what makes a territory, a community or a life liveable. We call the underlying skill <strong>context reading</strong>: the capacity to identify meaningful patterns across living systems — economic, ecological, social, narrative or relational.</span>
+      <span lang="pt">Ele floresce — ou colapsa — a partir do seu <strong>limite mais severo</strong>. Uma dimensão abundante não compensa uma escassez crítica em outra. É a mesma lógica que atravessa a ecologia, os sistemas complexos e a pergunta sobre o que torna um território, uma comunidade ou uma vida habitável. Chamamos essa competência de <strong>leitura de contexto</strong>: a capacidade de identificar padrões significativos em sistemas vivos — econômicos, ecológicos, sociais, narrativos ou relacionais.</span>
+    </p>
+    <div class="layers-grid">
+      <div class="layer-cell layer-clickable" data-layer="0" onclick="toggleLayerExample(0)">
+        <div class="n">01</div>
+        <div class="name" data-i18n><span lang="en">Economic</span><span lang="pt">Econômica</span></div>
+        <div class="layer-example" id="ex-0" data-i18n>
+          <span lang="en">Example signal: an unpaid bill three months in a row, read as a pattern — not a single event.</span>
+          <span lang="pt">Sinal exemplo: uma conta atrasada há três meses seguidos, lida como padrão — não como evento isolado.</span>
+        </div>
+      </div>
+      <div class="layer-cell layer-clickable" data-layer="1" onclick="toggleLayerExample(1)">
+        <div class="n">02</div>
+        <div class="name" data-i18n><span lang="en">Institutional</span><span lang="pt">Institucional</span></div>
+        <div class="layer-example" id="ex-1" data-i18n>
+          <span lang="en">Example signal: a visa or document stuck in a bureaucratic queue, quietly blocking every other plan.</span>
+          <span lang="pt">Sinal exemplo: um visto ou documento parado numa fila burocrática, travando silenciosamente todos os outros planos.</span>
+        </div>
+      </div>
+      <div class="layer-cell layer-clickable" data-layer="2" onclick="toggleLayerExample(2)">
+        <div class="n">03</div>
+        <div class="name" data-i18n><span lang="en">Informational</span><span lang="pt">Informacional</span></div>
+        <div class="layer-example" id="ex-2" data-i18n>
+          <span lang="en">Example signal: the same question asked in five different tools, never answered in one place.</span>
+          <span lang="pt">Sinal exemplo: a mesma pergunta feita em cinco ferramentas diferentes, nunca respondida num lugar só.</span>
+        </div>
+      </div>
+      <div class="layer-cell layer-clickable" data-layer="3" onclick="toggleLayerExample(3)">
+        <div class="n">04</div>
+        <div class="name" data-i18n><span lang="en">Ecological</span><span lang="pt">Ecológica</span></div>
+        <div class="layer-example" id="ex-3" data-i18n>
+          <span lang="en">Example signal: a dry stretch of the Cerrado mentioned in passing, three separate times, by three separate people.</span>
+          <span lang="pt">Sinal exemplo: um trecho seco do Cerrado mencionado de passagem, três vezes separadas, por três pessoas separadas.</span>
+        </div>
+      </div>
+      <div class="layer-cell layer-clickable" data-layer="4" onclick="toggleLayerExample(4)">
+        <div class="n">05</div>
+        <div class="name" data-i18n><span lang="en">Social</span><span lang="pt">Social</span></div>
+        <div class="layer-example" id="ex-4" data-i18n>
+          <span lang="en">Example signal: a shrinking circle of people someone reaches out to, weeks before they say they feel isolated.</span>
+          <span lang="pt">Sinal exemplo: um círculo de pessoas que alguém procura encolhendo, semanas antes de essa pessoa dizer que se sente isolada.</span>
+        </div>
+      </div>
+      <div class="layer-cell layer-clickable" data-layer="5" onclick="toggleLayerExample(5)">
+        <div class="n">06</div>
+        <div class="name" data-i18n><span lang="en">Affective-Domestic</span><span lang="pt">Afetivo-Doméstica</span></div>
+        <div class="layer-example" id="ex-5" data-i18n>
+          <span lang="en">Example signal: nights of poor sleep clustering right before a person's own words turn harsher toward themselves.</span>
+          <span lang="pt">Sinal exemplo: noites de sono ruim se agrupando bem antes de as próprias palavras de uma pessoa ficarem mais duras consigo mesma.</span>
+        </div>
+      </div>
+      <div class="layer-cell layer-clickable" data-layer="6" onclick="toggleLayerExample(6)">
+        <div class="n">07</div>
+        <div class="name" data-i18n><span lang="en">Cultural</span><span lang="pt">Cultural</span></div>
+        <div class="layer-example" id="ex-6" data-i18n>
+          <span lang="en">Example signal: a local festival or tradition someone stops mentioning, long before they stop attending.</span>
+          <span lang="pt">Sinal exemplo: uma festa ou tradição local que alguém para de mencionar, bem antes de parar de participar.</span>
+        </div>
+      </div>
+    </div>
+    <p class="thesis-text" style="margin-top:14px; font-size: 13px;" data-i18n>
+      <span lang="en">↑ Click a layer to see an illustrative example. These are composite illustrations of the kind of signal each layer captures — not literal private records.</span>
+      <span lang="pt">↑ Clique numa camada pra ver um exemplo ilustrativo. São composições do tipo de sinal que cada camada capta — não registros privados literais.</span>
+    </p>
+  </div>
+</section>
+
+<section id="method">
+  <div class="wrap">
+    <div class="eyebrow" data-i18n><span lang="en">02 — The Method</span><span lang="pt">02 — O Método</span></div>
+    <h2 style="font-size: clamp(28px,4vw,40px); max-width: 600px;" data-i18n>
+      <span lang="en">One method. Read across different living systems.</span>
+      <span lang="pt">Um método só. Lido em diferentes sistemas vivos.</span>
+    </h2>
+    <div class="method-list">
+      <div class="method-item"><div class="idx">A</div><div data-i18n>
+        <span lang="en"><h3>AI-assisted sensemaking</h3><p>Fragments of text, voice, images and documents are read and classified locally — never presented as more certain than the evidence allows.</p></span>
+        <span lang="pt"><h3>Leitura assistida por IA</h3><p>Fragmentos de texto, voz, imagem e documento são lidos e classificados localmente — nunca apresentados com mais certeza do que a evidência permite.</p></span>
+      </div></div>
+      <div class="method-item"><div class="idx">B</div><div data-i18n>
+        <span lang="en"><h3>Human-in-the-loop calibration</h3><p>Every classification can be corrected by the person who lived it. The system never overrides lived experience.</p></span>
+        <span lang="pt"><h3>Calibração com humano no laço</h3><p>Toda classificação pode ser corrigida por quem viveu aquilo. O sistema nunca sobrepõe a experiência vivida.</p></span>
+      </div></div>
+      <div class="method-item"><div class="idx">C</div><div data-i18n>
+        <span lang="en"><h3>Non-compensatory weighted geometric mean</h3><p>The flourishing index is calculated so that no dimension can silently hide a critical shortage in another.</p></span>
+        <span lang="pt"><h3>Média geométrica ponderada não-compensatória</h3><p>O índice de florescimento é calculado para que nenhuma dimensão esconda silenciosamente uma escassez crítica em outra.</p></span>
+      </div></div>
+      <div class="method-item"><div class="idx">D</div><div data-i18n>
+        <span lang="en"><h3>48-hour acute shock alert</h3><p>Averages can hide short, sharp collapses. A separate signal watches only the last 48 hours, independent of the general trend.</p></span>
+        <span lang="pt"><h3>Alerta agudo de 48 horas</h3><p>Médias podem esconder colapsos curtos e agudos. Um sinal separado observa só as últimas 48 horas, independente da tendência geral.</p></span>
+      </div></div>
+      <div class="method-item"><div class="idx">E</div><div data-i18n>
+        <span lang="en"><h3>Field notes &amp; evidence mapping</h3><p>Interviews, listening circles and territorial field records feed the same evidence base as digital fragments.</p></span>
+        <span lang="pt"><h3>Notas de campo e mapeamento de evidência</h3><p>Entrevistas, rodas de escuta e registros territoriais de campo alimentam a mesma base de evidência que os fragmentos digitais.</p></span>
+      </div></div>
+    </div>
+    <div class="formula-box">
+      <div class="f mono">FFI&nbsp;=&nbsp;exp(&nbsp;Σ&nbsp;w<sub>j</sub>&nbsp;·&nbsp;ln(S<sub>j</sub>)&nbsp;/&nbsp;Σ&nbsp;w<sub>j</sub>&nbsp;)</div>
+      <div class="f-label" data-i18n>
+        <span lang="en">S<sub>j</sub> = score of layer j · w<sub>j</sub> = relative weight of that layer in the final calculation</span>
+        <span lang="pt">S<sub>j</sub> = pontuação da camada j · w<sub>j</sub> = peso relativo daquela camada no cálculo final</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="bibliography">
+  <div class="wrap">
+    <div class="eyebrow" data-i18n><span lang="en">02.5 — Bibliography &amp; Kindred Thinkers</span><span lang="pt">02.5 — Bibliografia e Pensadores Afins</span></div>
+    <h2 style="font-size: clamp(28px,4vw,40px); max-width: 640px;" data-i18n>
+      <span lang="en">Grounded in real scholarship — not a theory floating alone.</span>
+      <span lang="pt">Amparado por pesquisa real — não uma teoria solta no universo.</span>
+    </h2>
+    <div class="method-list">
+      <div class="method-item"><div class="idx">1</div><div data-i18n>
+        <span lang="en"><h3>Liebig's Law of the Minimum (1840)</h3><p>Growth is limited by the scarcest essential input, not the average of all inputs — the founding intuition behind our non-compensatory weighting.</p></span>
+        <span lang="pt"><h3>Lei do Mínimo de Liebig (1840)</h3><p>O crescimento é limitado pelo recurso mais escasso, não pela média de todos os recursos — a intuição fundadora por trás da nossa ponderação não-compensatória.</p></span>
+      </div></div>
+      <div class="method-item"><div class="idx">2</div><div data-i18n>
+        <span lang="en"><h3>C.S. Holling, ecological resilience (1973)</h3><p>Founding work treating living systems as having multiple stable states, not one single growth trajectory.</p></span>
+        <span lang="pt"><h3>C.S. Holling, resiliência ecológica (1973)</h3><p>Trabalho fundador que trata sistemas vivos como tendo múltiplos estados estáveis, não uma única trajetória de crescimento.</p></span>
+      </div></div>
+      <div class="method-item"><div class="idx">3</div><div data-i18n>
+        <span lang="en"><h3>Amartya Sen &amp; Martha Nussbaum, the Capability Approach</h3><p>Wellbeing is not income or resources — it is the real freedom to live a life one values. Nussbaum's list of central capabilities directly informs our Institutional layer.</p></span>
+        <span lang="pt"><h3>Amartya Sen e Martha Nussbaum, Abordagem das Capacidades</h3><p>Bem-estar não é renda nem recursos — é a liberdade real de viver a vida que se valoriza. A lista de capacidades centrais de Nussbaum informa diretamente nossa camada Institucional.</p></span>
+      </div></div>
+      <div class="method-item"><div class="idx">4</div><div data-i18n>
+        <span lang="en"><h3>Pierre Bourdieu, forms of capital</h3><p>Economic, social, cultural and symbolic capital as interacting, convertible forms — the same thinker grounds two of our seven layers at once.</p></span>
+        <span lang="pt"><h3>Pierre Bourdieu, formas de capital</h3><p>Capital econômico, social, cultural e simbólico como formas interativas e conversíveis — o mesmo pensador ampara duas das nossas sete camadas ao mesmo tempo.</p></span>
+      </div></div>
+      <div class="method-item"><div class="idx">5</div><div data-i18n>
+        <span lang="en"><h3>Robert Putnam, collective social capital</h3><p>Trust and civic participation as a property of communities, not only individuals — informs how our Social layer reads beyond the single person.</p></span>
+        <span lang="pt"><h3>Robert Putnam, capital social coletivo</h3><p>Confiança e participação cívica como propriedade de comunidades, não só de indivíduos — informa como nossa camada Social lê além da pessoa isolada.</p></span>
+      </div></div>
+      <div class="method-item"><div class="idx">6</div><div data-i18n>
+        <span lang="en"><h3>John Bowlby &amp; Mary Ainsworth, attachment theory</h3><p>The concept of a "secure base" — a stable point of safety from which to explore the world — directly informs our Affective-Domestic layer.</p></span>
+        <span lang="pt"><h3>John Bowlby e Mary Ainsworth, teoria do apego</h3><p>O conceito de "base segura" — um ponto estável de segurança de onde se explora o mundo — informa diretamente nossa camada Afetivo-Doméstica.</p></span>
+      </div></div>
+    </div>
+    <p class="thesis-text" style="margin-top:30px; font-size: 14px;" data-i18n>
+      <span lang="en">This list will keep growing as the method is calibrated by the Research Circle. It is a living bibliography, not a closed canon.</span>
+      <span lang="pt">Essa lista vai continuar crescendo conforme o método for calibrado pelo Círculo de Pesquisa. É uma bibliografia viva, não um cânone fechado.</span>
+    </p>
+  </div>
+</section>
+
+<section id="labs">
+  <div class="wrap">
+    <div class="eyebrow" data-i18n><span lang="en">03 — Living Labs</span><span lang="pt">03 — Laboratórios Vivos</span></div>
+    <h2 style="font-size: clamp(28px,4vw,40px); max-width: 620px;" data-i18n>
+      <span lang="en">Where the method is already being tested against real life.</span>
+      <span lang="pt">Onde o método já está sendo testado contra a vida real.</span>
+    </h2>
+    <div class="labs-grid">
+      <div class="lab-card">
+        <span class="tag tag-confirmed" data-i18n><span lang="en">Active</span><span lang="pt">Ativo</span></span>
+        <h3 data-i18n><span lang="en">Goiás / Cerrado</span><span lang="pt">Goiás / Cerrado</span></h3>
+        <p data-i18n>
+          <span lang="en">First living laboratory. Two years of real personal and territorial data already calibrated against the method.</span>
+          <span lang="pt">Primeiro laboratório vivo. Dois anos de dado pessoal e territorial real já calibrados contra o método.</span>
+        </p>
+      </div>
+      <div class="lab-card">
+        <span class="tag tag-conversation" data-i18n><span lang="en">In formation</span><span lang="pt">Em formação</span></span>
+        <h3>Finland</h3>
+        <p data-i18n>
+          <span lang="en">Early dialogue with the Helsinki research community; country research guide search open.</span>
+          <span lang="pt">Diálogo inicial com a comunidade de pesquisa de Helsinki; busca por guia de pesquisa no país em aberto.</span>
+        </p>
+      </div>
+      <div class="lab-card">
+        <span class="tag tag-conversation" data-i18n><span lang="en">In formation</span><span lang="pt">Em formação</span></span>
+        <h3 data-i18n><span lang="en">Switzerland</span><span lang="pt">Suíça</span></h3>
+        <p data-i18n>
+          <span lang="en">Academic liaison route in formation, anchored through a Zürich-based research contact.</span>
+          <span lang="pt">Rota de ponte acadêmica em formação, ancorada por um contato de pesquisa em Zürich.</span>
+        </p>
+      </div>
+      <div class="lab-card">
+        <span class="tag tag-exploratory" data-i18n><span lang="en">Exploratory</span><span lang="pt">Exploratório</span></span>
+        <h3 data-i18n><span lang="en">Italy</span><span lang="pt">Itália</span></h3>
+        <p data-i18n>
+          <span lang="en">Field node in exploration around an active personal-transition pilot in Torino.</span>
+          <span lang="pt">Nó de campo em exploração em torno de um piloto ativo de transição pessoal em Torino.</span>
+        </p>
+      </div>
+      <div class="lab-card">
+        <span class="tag tag-exploratory" data-i18n><span lang="en">Exploratory</span><span lang="pt">Exploratório</span></span>
+        <h3 data-i18n><span lang="en">Czech Republic</span><span lang="pt">República Tcheca</span></h3>
+        <p data-i18n><span lang="en">Exploratory dialogue, early stage.</span><span lang="pt">Diálogo exploratório, estágio inicial.</span></p>
+      </div>
+      <div class="lab-card" style="display:flex; align-items:center; justify-content:center; border-style:dashed;">
+        <p style="text-align:center; margin:0;" data-i18n>
+          <span lang="en">Open for partners.<br><a href="#roles" style="color:var(--gold);">Propose a node →</a></span>
+          <span lang="pt">Aberto para parceiros.<br><a href="#roles" style="color:var(--gold);">Propor um nó →</a></span>
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="circle">
+  <div class="wrap">
+    <div class="eyebrow" data-i18n><span lang="en">04 — Calibration Circle</span><span lang="pt">04 — Círculo de Calibração</span></div>
+    <h2 style="font-size: clamp(28px,4vw,40px); max-width: 640px;" data-i18n>
+      <span lang="en">The method is calibrated by people, not only by data.</span>
+      <span lang="pt">O método é calibrado por pessoas, não só por dados.</span>
+    </h2>
+    <p class="thesis-text" style="margin-top:18px;" data-i18n>
+      <span lang="en">Status is shown plainly — confirmed, in conversation, or open — because an honest circle is worth more than an impressive-looking one.</span>
+      <span lang="pt">O status é mostrado com clareza — confirmado, em conversa ou em aberto — porque um círculo honesto vale mais que um que só parece impressionante.</span>
+    </p>
+
+    <div class="circle-cat">
+      <h3 class="catname" data-i18n><span lang="en">Core Team</span><span lang="pt">Núcleo</span></h3>
+      <div class="people-grid">
+        <div class="person-card">
+          <div class="name">Isabela Rebouças Bessa</div>
+          <div class="role" data-i18n><span lang="en">Founder / Scientific &amp; Strategic Lead</span><span lang="pt">Fundadora / Liderança Científica e Estratégica</span></div>
+          <div class="meta"><span class="country">Brazil</span><span class="tag tag-confirmed" data-i18n><span lang="en">Confirmed</span><span lang="pt">Confirmado</span></span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="circle-cat">
+      <h3 class="catname" data-i18n><span lang="en">Research &amp; Calibration Circle</span><span lang="pt">Círculo de Pesquisa e Calibração</span></h3>
+      <div class="people-grid">
+        <div class="person-card">
+          <div class="name">José Hidasi-Neto</div>
+          <div class="role" data-i18n><span lang="en">Scientific &amp; Statistical Advisor</span><span lang="pt">Assessor Científico e Estatístico</span></div>
+          <div class="meta"><span class="country">Brazil</span><span class="tag tag-confirmed" data-i18n><span lang="en">Confirmed</span><span lang="pt">Confirmado</span></span></div>
+        </div>
+        <div class="person-card">
+          <div class="name">Caio Jufer</div>
+          <div class="role" data-i18n><span lang="en">Switzerland Research Liaison (proposed)</span><span lang="pt">Ponte de Pesquisa na Suíça (proposto)</span></div>
+          <div class="meta"><span class="country">Switzerland</span><span class="tag tag-conversation" data-i18n><span lang="en">In conversation</span><span lang="pt">Em conversa</span></span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="circle-cat">
+      <h3 class="catname" data-i18n><span lang="en">Civil Society Field Partners</span><span lang="pt">Parceiros de Campo da Sociedade Civil</span></h3>
+      <div class="people-grid">
+        <div class="person-card">
+          <div class="name">Rede de Proteção Animal</div>
+          <div class="role" data-i18n><span lang="en">Civil society field partner — public reach &amp; territorial listening</span><span lang="pt">Parceira de campo da sociedade civil — alcance público e escuta territorial</span></div>
+          <div class="meta"><span class="country">Brazil</span><span class="tag tag-confirmed" data-i18n><span lang="en">Confirmed</span><span lang="pt">Confirmado</span></span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="circle-cat">
+      <h3 class="catname" data-i18n><span lang="en">Open Roles in the Circle</span><span lang="pt">Vagas Abertas no Círculo</span></h3>
+      <div class="openrole-grid" data-i18n>
+        <div lang="en" style="display:contents;">
+          <div class="openrole-chip">Mental Health / Psychiatry Advisor <span class="tag tag-open">Open</span></div>
+          <div class="openrole-chip">Climate &amp; Biodiversity Advisor <span class="tag tag-open">Open</span></div>
+          <div class="openrole-chip">Public Policy Advisor <span class="tag tag-open">Open</span></div>
+          <div class="openrole-chip">Youth &amp; Education Advisor <span class="tag tag-open">Open</span></div>
+          <div class="openrole-chip">Data / AI Advisor <span class="tag tag-open">Open</span></div>
+          <div class="openrole-chip">Community Listening Partner <span class="tag tag-open">Open</span></div>
+          <div class="openrole-chip">Marketing &amp; Narrative Advisor <span class="tag tag-open">Open</span></div>
+          <div class="openrole-chip">Aging &amp; Care Advisor <span class="tag tag-open">Open</span></div>
+          <div class="openrole-chip">Racial Equity &amp; Social Vulnerability Advisor <span class="tag tag-open">Open</span></div>
+        </div>
+        <div lang="pt" style="display:contents;">
+          <div class="openrole-chip">Assessoria de Saúde Mental / Psiquiatria <span class="tag tag-open">Aberto</span></div>
+          <div class="openrole-chip">Assessoria de Clima e Biodiversidade <span class="tag tag-open">Aberto</span></div>
+          <div class="openrole-chip">Assessoria de Política Pública <span class="tag tag-open">Aberto</span></div>
+          <div class="openrole-chip">Assessoria de Juventude e Educação <span class="tag tag-open">Aberto</span></div>
+          <div class="openrole-chip">Assessoria de Dados / IA <span class="tag tag-open">Aberto</span></div>
+          <div class="openrole-chip">Parceria de Escuta Comunitária <span class="tag tag-open">Aberto</span></div>
+          <div class="openrole-chip">Assessoria de Marketing e Narrativa <span class="tag tag-open">Aberto</span></div>
+          <div class="openrole-chip">Assessoria de Envelhecimento e Cuidado <span class="tag tag-open">Aberto</span></div>
+          <div class="openrole-chip">Assessoria de Equidade Racial e Vulnerabilidade Social <span class="tag tag-open">Aberto</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="roles">
+  <div class="wrap">
+    <div class="eyebrow" data-i18n><span lang="en">05 — Join the Expedition</span><span lang="pt">05 — Entre na Expedição</span></div>
+    <h2 style="font-size: clamp(28px,4vw,40px); max-width: 600px;" data-i18n>
+      <span lang="en">Contribute your testimony, your method, your calibration.</span>
+      <span lang="pt">Contribua com seu testemunho, seu método, sua calibração.</span>
+    </h2>
+    <p class="thesis-text" style="margin-top:18px;" data-i18n>
+      <span lang="en">More contributors, from more territories and repertoires, make the flourishing calculation more honest — not more complicated.</span>
+      <span lang="pt">Mais colaboradores, de mais territórios e repertórios, tornam o cálculo de florescimento mais honesto — não mais complicado.</span>
+    </p>
+    <form class="form-panel" onsubmit="return handleFormSubmit(event, 'roles-thanks')">
+      <div class="form-row">
+        <div><label data-i18n><span lang="en">Name</span><span lang="pt">Nome</span></label><input type="text" required></div>
+        <div><label>Email</label><input type="email" required></div>
+      </div>
+      <div class="form-row">
+        <div><label data-i18n><span lang="en">Country</span><span lang="pt">País</span></label><input type="text"></div>
+        <div><label data-i18n><span lang="en">Organization (optional)</span><span lang="pt">Organização (opcional)</span></label><input type="text"></div>
+      </div>
+      <div class="form-row">
+        <div class="full"><label data-i18n><span lang="en">Area of expertise</span><span lang="pt">Área de especialidade</span></label><input type="text"></div>
+      </div>
+      <div class="form-row">
+        <div class="full">
+          <label data-i18n><span lang="en">How would you like to contribute?</span><span lang="pt">Como você gostaria de contribuir?</span></label>
+          <select>
+            <option>Country Research Guide</option>
+            <option>Scientific Advisor</option>
+            <option>Field Node Collaborator</option>
+            <option>Community Partner</option>
+            <option>Sponsor</option>
+            <option>Research Volunteer</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="full"><label>LinkedIn / website</label><input type="text"></div>
+      </div>
+      <button type="submit" class="btn btn-primary" data-i18n><span lang="en">Send</span><span lang="pt">Enviar</span></button>
+      <div class="thankyou" id="roles-thanks" data-i18n>
+        <span lang="en">Thank you — this goes directly to our inbox, and we read every message ourselves.</span>
+        <span lang="pt">Obrigada — isso vai direto pra nossa caixa de entrada, e lemos cada mensagem pessoalmente.</span>
+      </div>
+    </form>
+  </div>
+</section>
+
+<section id="support">
+  <div class="wrap">
+    <div class="eyebrow" data-i18n><span lang="en">06 — Support the Expedition</span><span lang="pt">06 — Apoie a Expedição</span></div>
+    <h2 style="font-size: clamp(28px,4vw,40px); max-width: 600px;" data-i18n>
+      <span lang="en">A distributed calibration network, not a single ask.</span>
+      <span lang="pt">Uma rede distribuída de calibração, não um único pedido.</span>
+    </h2>
+    <div class="support-grid" data-i18n>
+      <span lang="en" style="display:contents;">
+        <div class="support-card"><div><div class="amount">US$ 0</div><div class="lvl">Knowledge Partner</div><p>Interviews, introductions, methodological critique, references, data access or visibility.</p></div></div>
+        <div class="support-card"><div><div class="amount">US$ 50–250</div><div class="lvl">Field Signal Supporter</div><p>Funds one interview, transcription, translation or field note.</p></div></div>
+        <div class="support-card"><div><div class="amount">US$ 500–1,000</div><div class="lvl">Calibration Supporter</div><p>Funds one calibration cycle and a short public evidence brief.</p></div></div>
+        <div class="support-card"><div><div class="amount">US$ 2,500</div><div class="lvl">Field Node Sponsor</div><p>Funds a Brazil–Europe or Goiás–Cerrado calibration node with interviews and synthesis.</p></div></div>
+        <div class="support-card"><div><div class="amount">US$ 5,000</div><div class="lvl">Founding Micro-Pilot Sponsor</div><p>Funds a 30-day micro-pilot with evidence mapping and a short technical report.</p></div></div>
+        <div class="support-card"><div><div class="amount">US$ 15,000–25,000</div><div class="lvl">Strategic Pilot Partner</div><p>Supports a larger multi-stakeholder pilot and dashboard structure.</p></div></div>
+      </span>
+      <span lang="pt" style="display:contents;">
+        <div class="support-card"><div><div class="amount">US$ 0</div><div class="lvl">Parceiro de Conhecimento</div><p>Entrevistas, apresentações, crítica metodológica, referências, acesso a dados ou visibilidade.</p></div></div>
+        <div class="support-card"><div><div class="amount">US$ 50–250</div><div class="lvl">Apoiador de Sinal de Campo</div><p>Financia uma entrevista, transcrição, tradução ou nota de campo.</p></div></div>
+        <div class="support-card"><div><div class="amount">US$ 500–1.000</div><div class="lvl">Apoiador de Calibração</div><p>Financia um ciclo de calibração e um breve relatório público de evidência.</p></div></div>
+        <div class="support-card"><div><div class="amount">US$ 2.500</div><div class="lvl">Patrocinador de Nó de Campo</div><p>Financia um nó de calibração Brasil–Europa ou Goiás–Cerrado, com entrevistas e síntese.</p></div></div>
+        <div class="support-card"><div><div class="amount">US$ 5.000</div><div class="lvl">Patrocinador Fundador do Micro-Piloto</div><p>Financia um micro-piloto de 30 dias com mapeamento de evidência e relatório técnico curto.</p></div></div>
+        <div class="support-card"><div><div class="amount">US$ 15.000–25.000</div><div class="lvl">Parceiro Estratégico de Piloto</div><p>Apoia um piloto maior, multi-stakeholder, e a estrutura do painel.</p></div></div>
+      </span>
+    </div>
+    <div class="support-note" data-i18n>
+      <span lang="en">We are building a distributed calibration network. Small contributions help fund interviews, field notes, translation, expert review and public evidence briefs. Larger partners help launch the Goiás / Cerrado living lab.</span>
+      <span lang="pt">Estamos construindo uma rede distribuída de calibração. Contribuições pequenas ajudam a financiar entrevistas, notas de campo, tradução, revisão especializada e relatórios públicos de evidência. Parceiros maiores ajudam a lançar o laboratório vivo de Goiás/Cerrado.</span>
+    </div>
+    <form onsubmit="return handleFormSubmit(event, 'support-thanks')" style="margin-top:26px;">
+      <button type="submit" class="btn btn-ghost" data-i18n><span lang="en">I want to support</span><span lang="pt">Quero apoiar</span></button>
+      <div class="thankyou" id="support-thanks" data-i18n>
+        <span lang="en">Thank you — we'll follow up by email before anything else happens. No payment is processed on this page.</span>
+        <span lang="pt">Obrigada — vamos responder por e-mail antes de qualquer outra coisa acontecer. Nenhum pagamento é processado nesta página.</span>
+      </div>
+    </form>
+  </div>
+</section>
+
+<section id="updates">
+  <div class="wrap">
+    <div class="eyebrow" data-i18n><span lang="en">07 — Field Notes</span><span lang="pt">07 — Notas de Campo</span></div>
+    <h2 style="font-size: clamp(28px,4vw,40px); max-width: 560px;" data-i18n><span lang="en">Updates from the field.</span><span lang="pt">Atualizações de campo.</span></h2>
+    <div style="margin-top:36px;">
+      <div class="update-item"><div class="date mono">2026 · 07</div><div data-i18n>
+        <span lang="en"><h3>Finland track: HELSUS newsletter opportunity</h3><p>Initial dialogue with the Helsinki research community around sharing the initiative with HELSUS members and Master's students.</p></span>
+        <span lang="pt"><h3>Frente Finlândia: oportunidade de boletim da HELSUS</h3><p>Diálogo inicial com a comunidade de pesquisa de Helsinki sobre compartilhar a iniciativa com membros da HELSUS e alunos de mestrado.</p></span>
+      </div></div>
+      <div class="update-item"><div class="date mono">2026 · 07</div><div data-i18n>
+        <span lang="en"><h3>Switzerland track: academic route under mapping</h3><p>Exploring a Zürich-based university bridge, following early feedback from Swiss research funders.</p></span>
+        <span lang="pt"><h3>Frente Suíça: rota acadêmica em mapeamento</h3><p>Explorando uma ponte universitária em Zürich, após retorno inicial de financiadores de pesquisa suíços.</p></span>
+      </div></div>
+      <div class="update-item"><div class="date mono">2026 · 07</div><div data-i18n>
+        <span lang="en"><h3>Goiás / Cerrado: first living lab in formation</h3><p>Two years of real personal and territorial data now calibrated against the seven-layer method.</p></span>
+        <span lang="pt"><h3>Goiás / Cerrado: primeiro laboratório vivo em formação</h3><p>Dois anos de dado pessoal e territorial real agora calibrados contra o método das sete camadas.</p></span>
+      </div></div>
+    </div>
+  </div>
+</section>
+
+<section id="contact">
+  <div class="wrap">
+    <div class="eyebrow" data-i18n><span lang="en">08 — Contact</span><span lang="pt">08 — Contato</span></div>
+    <h2 style="font-size: clamp(28px,4vw,40px); max-width: 500px;" data-i18n><span lang="en">Talk to us directly.</span><span lang="pt">Fale diretamente com a gente.</span></h2>
+    <form class="form-panel" onsubmit="return handleFormSubmit(event, 'contact-thanks')" style="margin-top:30px;">
+      <div class="form-row">
+        <div><label data-i18n><span lang="en">Name</span><span lang="pt">Nome</span></label><input type="text" required></div>
+        <div><label>Email</label><input type="email" required></div>
+      </div>
+      <div class="form-row"><div class="full"><label data-i18n><span lang="en">Message</span><span lang="pt">Mensagem</span></label><textarea></textarea></div></div>
+      <button type="submit" class="btn btn-primary" data-i18n><span lang="en">Send message</span><span lang="pt">Enviar mensagem</span></button>
+      <div class="thankyou" id="contact-thanks" data-i18n>
+        <span lang="en">Thank you — or write to us directly at bessa.isabelar@gmail.com.</span>
+        <span lang="pt">Obrigada — ou escreva direto pra bessa.isabelar@gmail.com.</span>
+      </div>
+    </form>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap" style="display:flex; justify-content:space-between; width:100%; flex-wrap:wrap; gap:16px;">
+    <div data-i18n><span lang="en">Invisible Infrastructures of Flourishing · Goiás, Brazil</span><span lang="pt">Infraestruturas Invisíveis do Florescimento · Goiás, Brasil</span></div>
+    <div><a href="mailto:bessa.isabelar@gmail.com">bessa.isabelar@gmail.com</a></div>
+  </div>
+</footer>
+
+<script>
+function toggleLayerExample(i) {
+  document.getElementById('ex-' + i).classList.toggle('open');
+}
+function setLang(lang) {
+  document.documentElement.setAttribute('data-active-lang', lang);
+  document.getElementById('btn-en').classList.toggle('active', lang === 'en');
+  document.getElementById('btn-pt').classList.toggle('active', lang === 'pt');
+  try { localStorage.setItem('iif-lang', lang); } catch (e) {}
+}
+(function () {
+  try {
+    const saved = localStorage.getItem('iif-lang');
+    if (saved) setLang(saved);
+  } catch (e) {}
+})();
+
+function handleFormSubmit(e, thanksId) {
+  e.preventDefault();
+  document.getElementById(thanksId).classList.add('show');
+  return false;
+}
+
+const canvas = document.getElementById('network-canvas');
+const ctx = canvas.getContext('2d');
+let W, H, nodes = [];
+function resize() { W = canvas.width = canvas.offsetWidth; H = canvas.height = canvas.offsetHeight; }
+window.addEventListener('resize', resize);
+function initNodes() {
+  nodes = [];
+  const count = window.innerWidth < 700 ? 16 : 28;
+  for (let i = 0; i < count; i++) {
+    nodes.push({ x: Math.random() * W, y: Math.random() * H, vx: (Math.random() - 0.5) * 0.18, vy: (Math.random() - 0.5) * 0.18, r: Math.random() * 1.6 + 1 });
+  }
+}
+function tick() {
+  ctx.clearRect(0, 0, W, H);
+  for (const n of nodes) { n.x += n.vx; n.y += n.vy; if (n.x < 0 || n.x > W) n.vx *= -1; if (n.y < 0 || n.y > H) n.vy *= -1; }
+  for (let i = 0; i < nodes.length; i++) {
+    for (let j = i + 1; j < nodes.length; j++) {
+      const a = nodes[i], b = nodes[j];
+      const d = Math.hypot(a.x - b.x, a.y - b.y);
+      if (d < 190) { ctx.strokeStyle = `rgba(70,165,153,${0.12 * (1 - d / 190)})`; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke(); }
+    }
+  }
+  for (const n of nodes) { ctx.beginPath(); ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2); ctx.fillStyle = 'rgba(201,162,75,0.55)'; ctx.fill(); }
+  requestAnimationFrame(tick);
+}
+resize(); initNodes(); tick();
+const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+if (reduceMotion) { cancelAnimationFrame(tick); }
+</script>
+
+</body>
+</html>
