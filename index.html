@@ -152,6 +152,21 @@
   .support-card p { font-size: 13.5px; color: var(--parchment-dim); }
   .support-note { margin-top: 30px; padding: 20px 24px; border-left: 2px solid var(--teal); background: rgba(70,165,153,0.05); font-size: 14px; color: var(--parchment-dim); }
 
+  /* ---------- SIMULATOR ---------- */
+  @media (max-width: 760px) { #sim-grid { grid-template-columns: 1fr !important; } }
+  .sim-slider-row { margin-bottom: 18px; }
+  .sim-slider-row .lbl { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 6px; }
+  .sim-slider-row .lbl .val { font-family: 'IBM Plex Mono', monospace; color: var(--gold); }
+  .sim-slider-row input[type="range"] {
+    width: 100%; height: 4px; -webkit-appearance: none; appearance: none;
+    background: var(--navy-line); border-radius: 2px; outline: none;
+  }
+  .sim-slider-row input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none; width: 16px; height: 16px; border-radius: 50%;
+    background: var(--teal); cursor: pointer; border: 2px solid var(--navy-deep);
+  }
+  #sim-callout { margin-top: 16px; font-size: 13.5px; color: var(--teal); min-height: 20px; }
+
   /* ---------- UPDATES ---------- */
   .update-item { padding: 24px 0; border-bottom: 1px solid var(--navy-line); display: grid; grid-template-columns: 140px 1fr; gap: 20px; }
   .update-item:first-child { border-top: 1px solid var(--navy-line); }
@@ -177,6 +192,7 @@
       <a href="#method"><span lang="en">Method</span><span lang="pt">Método</span></a>
       <a href="#labs"><span lang="en">Living Labs</span><span lang="pt">Laboratórios Vivos</span></a>
       <a href="#bibliography"><span lang="en">Bibliography</span><span lang="pt">Bibliografia</span></a>
+      <a href="#simulator"><span lang="en">Try It</span><span lang="pt">Experimente</span></a>
       <a href="#circle"><span lang="en">Circle</span><span lang="pt">Círculo</span></a>
       <a href="#roles"><span lang="en">Open Roles</span><span lang="pt">Vagas Abertas</span></a>
       <a href="#support"><span lang="en">Support</span><span lang="pt">Apoiar</span></a>
@@ -209,6 +225,20 @@
       <span lang="en"><span class="node">Economic</span><span class="arrow">·</span> <span class="node">Institutional</span><span class="arrow">·</span> <span class="node">Informational</span><span class="arrow">·</span> <span class="node">Ecological</span><span class="arrow">·</span> <span class="node">Social</span><span class="arrow">·</span> <span class="node">Affective-Domestic</span><span class="arrow">·</span> <span class="node">Cultural</span></span>
       <span lang="pt"><span class="node">Econômica</span><span class="arrow">·</span> <span class="node">Institucional</span><span class="arrow">·</span> <span class="node">Informacional</span><span class="arrow">·</span> <span class="node">Ecológica</span><span class="arrow">·</span> <span class="node">Social</span><span class="arrow">·</span> <span class="node">Afetivo-Doméstica</span><span class="arrow">·</span> <span class="node">Cultural</span></span>
     </div>
+  </div>
+</section>
+
+<section id="layer-zero" style="padding-bottom: 70px;">
+  <div class="wrap">
+    <div class="eyebrow" data-i18n><span lang="en">00 — Layer Zero</span><span lang="pt">00 — Camada Zero</span></div>
+    <h2 style="font-size: clamp(24px,3.4vw,34px); max-width: 640px;" data-i18n>
+      <span lang="en">Before measuring flourishing, we need to recognize context.</span>
+      <span lang="pt">Antes de medir florescimento, precisamos reconhecer contexto.</span>
+    </h2>
+    <p class="thesis-text" style="margin-top:18px; font-size: 15px;" data-i18n>
+      <span lang="en">The same underlying pattern can show up in a life in transition, in a relationship, in a city, in an organization, in a public policy or in an ecosystem. <strong>Context reading</strong> is the capacity to recognize that scattered signals belong to the same living system. The seven layers below don't float on their own — they grow out of this one root.</span>
+      <span lang="pt">O mesmo padrão de fundo pode aparecer numa vida em transição, num relacionamento, numa cidade, numa organização, numa política pública ou num ecossistema. A <strong>leitura de contexto</strong> é a capacidade de reconhecer que sinais dispersos pertencem ao mesmo sistema vivo. As sete camadas abaixo não flutuam soltas — elas nascem dessa única raiz.</span>
+    </p>
   </div>
 </section>
 
@@ -364,6 +394,26 @@
       <span lang="en">This list will keep growing as the method is calibrated by the Research Circle. It is a living bibliography, not a closed canon.</span>
       <span lang="pt">Essa lista vai continuar crescendo conforme o método for calibrado pelo Círculo de Pesquisa. É uma bibliografia viva, não um cânone fechado.</span>
     </p>
+  </div>
+</section>
+
+<section id="simulator">
+  <div class="wrap">
+    <div class="eyebrow" data-i18n><span lang="en">02.5 — Try the Principle</span><span lang="pt">02.5 — Experimente o Princípio</span></div>
+    <h2 style="font-size: clamp(28px,4vw,40px); max-width: 620px;" data-i18n>
+      <span lang="en">Move one layer down. Watch the whole shape change.</span>
+      <span lang="pt">Baixe uma camada. Veja a forma inteira mudar.</span>
+    </h2>
+    <p class="thesis-text" style="margin-top:14px; font-size: 14px;" data-i18n>
+      <span lang="en">This is a simulator with illustrative numbers, not anyone's real data. It exists to show, in your own hands, what "non-compensatory" actually means.</span>
+      <span lang="pt">Isto é um simulador com números ilustrativos, não o dado real de ninguém. Existe pra mostrar, nas suas próprias mãos, o que "não-compensatório" realmente significa.</span>
+    </p>
+    <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-top: 40px; align-items:center;" id="sim-grid">
+      <div style="display:flex; justify-content:center;">
+        <svg id="sim-flower" viewBox="0 0 300 300" width="100%" style="max-width:320px;"></svg>
+      </div>
+      <div id="sim-sliders"></div>
+    </div>
   </div>
 </section>
 
@@ -640,6 +690,110 @@
 function toggleLayerExample(i) {
   document.getElementById('ex-' + i).classList.toggle('open');
 }
+
+// ---------- Flor interativa (simulador) ----------
+// Mesma matematica da flor real do app: curva Catmull-Rom fechada,
+// pino minimo de raio pra nunca sumir de vez (murcha, nao desaparece).
+const SIM_LAYERS = [
+  { en: "Economic", pt: "Econômica" },
+  { en: "Institutional", pt: "Institucional" },
+  { en: "Informational", pt: "Informacional" },
+  { en: "Ecological", pt: "Ecológica" },
+  { en: "Social", pt: "Social" },
+  { en: "Affective-Domestic", pt: "Afetivo-Doméstica" },
+  { en: "Cultural", pt: "Cultural" },
+];
+let simValues = [80, 80, 80, 80, 80, 80, 80];
+const SIM_SIZE = 300, SIM_CENTER = 150, SIM_MAX_R = 108, SIM_MIN_R = 14;
+
+function simPolar(angleDeg, r) {
+  const rad = (angleDeg - 90) * Math.PI / 180;
+  return [SIM_CENTER + r * Math.cos(rad), SIM_CENTER + r * Math.sin(rad)];
+}
+function simSmoothPath(points) {
+  const n = points.length;
+  let d = `M ${points[0][0]},${points[0][1]} `;
+  for (let i = 0; i < n; i++) {
+    const p0 = points[(i - 1 + n) % n], p1 = points[i], p2 = points[(i + 1) % n], p3 = points[(i + 2) % n];
+    const c1 = [p1[0] + (p2[0] - p0[0]) / 6, p1[1] + (p2[1] - p0[1]) / 6];
+    const c2 = [p2[0] - (p3[0] - p1[0]) / 6, p2[1] - (p3[1] - p1[1]) / 6];
+    d += `C ${c1[0]},${c1[1]} ${c2[0]},${c2[1]} ${p2[0]},${p2[1]} `;
+  }
+  return d + "Z";
+}
+function simToneFor(score) {
+  if (score < 35) return "#b23a2f";
+  if (score < 55) return "var(--gold)";
+  return "var(--teal)";
+}
+function renderSimFlower() {
+  const svg = document.getElementById('sim-flower');
+  const angleStep = 360 / SIM_LAYERS.length;
+  const vertices = simValues.map((v, i) => {
+    const r = SIM_MIN_R + (SIM_MAX_R - SIM_MIN_R) * Math.max(0.04, Math.min(1, v / 100));
+    return simPolar(i * angleStep, r);
+  });
+  const pathD = simSmoothPath(vertices);
+  const lang = document.documentElement.getAttribute('data-active-lang') || 'en';
+
+  let svgContent = '';
+  [0.5, 1].forEach(frac => {
+    svgContent += `<circle cx="${SIM_CENTER}" cy="${SIM_CENTER}" r="${SIM_MIN_R + (SIM_MAX_R - SIM_MIN_R) * frac}" fill="none" stroke="var(--navy-line)" stroke-width="1" opacity="0.5" ${frac===1?'stroke-dasharray="2 4"':''}/>`;
+  });
+  SIM_LAYERS.forEach((_, i) => {
+    const [x, y] = simPolar(i * angleStep, SIM_MAX_R);
+    svgContent += `<line x1="${SIM_CENTER}" y1="${SIM_CENTER}" x2="${x}" y2="${y}" stroke="var(--navy-line)" stroke-width="1" opacity="0.35"/>`;
+  });
+  svgContent += `<path d="${pathD}" fill="var(--teal)" fill-opacity="0.20" stroke="var(--gold)" stroke-width="1.5" stroke-opacity="0.8"/>`;
+  vertices.forEach((v, i) => {
+    svgContent += `<circle cx="${v[0]}" cy="${v[1]}" r="5" fill="${simToneFor(simValues[i])}" stroke="${simToneFor(simValues[i])}" stroke-width="2"/>`;
+  });
+  SIM_LAYERS.forEach((l, i) => {
+    const [lx, ly] = simPolar(i * angleStep, SIM_MAX_R + 24);
+    svgContent += `<text x="${lx}" y="${ly}" text-anchor="middle" dominant-baseline="middle" font-size="9.5" fill="var(--parchment-dim)" font-family="IBM Plex Mono, monospace">${l[lang]}</text>`;
+  });
+  svg.innerHTML = svgContent;
+
+  const minVal = Math.min(...simValues);
+  const minIdx = simValues.indexOf(minVal);
+  const callout = document.getElementById('sim-callout');
+  const restAvg = simValues.filter((_, i) => i !== minIdx).reduce((a, b) => a + b, 0) / (simValues.length - 1);
+  if (minVal < restAvg - 15) {
+    callout.textContent = lang === 'pt'
+      ? `A pétala "${SIM_LAYERS[minIdx].pt}" está puxando a flor inteira pra baixo — mesmo com as outras 6 camadas fortes.`
+      : `The "${SIM_LAYERS[minIdx].en}" petal is pulling the whole flower down — even with the other 6 layers strong.`;
+  } else {
+    callout.textContent = lang === 'pt' ? "Todas as camadas em equilíbrio relativo." : "All layers in relative balance.";
+  }
+}
+function buildSimSliders() {
+  const wrap = document.getElementById('sim-sliders');
+  wrap.innerHTML = '';
+  SIM_LAYERS.forEach((l, i) => {
+    const row = document.createElement('div');
+    row.className = 'sim-slider-row';
+    row.innerHTML = `<div class="lbl"><span data-i18n><span lang="en">${l.en}</span><span lang="pt">${l.pt}</span></span><span class="val mono">${simValues[i]}</span></div>
+      <input type="range" min="0" max="100" value="${simValues[i]}" data-idx="${i}">`;
+    wrap.appendChild(row);
+  });
+  wrap.querySelectorAll('input[type=range]').forEach(inp => {
+    inp.addEventListener('input', (e) => {
+      const idx = parseInt(e.target.dataset.idx);
+      simValues[idx] = parseInt(e.target.value);
+      e.target.parentElement.querySelector('.val').textContent = simValues[idx];
+      renderSimFlower();
+    });
+  });
+}
+document.getElementById('sim-flower') && (() => {
+  const p = document.createElement('p');
+  p.id = 'sim-callout';
+  p.className = 'mono';
+  document.getElementById('sim-grid').appendChild(p);
+  buildSimSliders();
+  renderSimFlower();
+})();
+
 function setLang(lang) {
   document.documentElement.setAttribute('data-active-lang', lang);
   document.getElementById('btn-en').classList.toggle('active', lang === 'en');
